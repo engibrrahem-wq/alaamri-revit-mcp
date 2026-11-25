@@ -1,0 +1,23 @@
+<Project>
+  <!-- Shared Revit targeting. Build with -p:RevitYear=2025|2026|2027 (default 2027).
+       2027 uses .NET 10 and the local Revit install (or Nice3point reference packages if not installed);
+       2025 and 2026 use .NET 8 and the Nice3point reference packages. -->
+  <PropertyGroup>
+    <RevitYear Condition="'$(RevitYear)' == ''">2027</RevitYear>
+    <TargetFramework Condition="'$(RevitYear)' == '2027'">net10.0-windows</TargetFramework>
+    <TargetFramework Condition="'$(RevitYear)' != '2027'">net8.0-windows</TargetFramework>
+    <RevitDir>C:\Program Files\Autodesk\Revit $(RevitYear)</RevitDir>
+    <UseLocalRevit Condition="Exists('$(RevitDir)\RevitAPI.dll')">true</UseLocalRevit>
+    <DefineConstants>$(DefineConstants);REVIT$(RevitYear)</DefineConstants>
+    <BaseIntermediateOutputPath>$(MSBuildThisFileDirectory)..\build\obj\$(MSBuildProjectName)\$(RevitYear)\</BaseIntermediateOutputPath>
+    <PlatformTarget>x64</PlatformTarget>
+  </PropertyGroup>
+  <ItemGroup Condition="'$(UseLocalRevit)' == 'true'">
+    <Reference Include="RevitAPI"><HintPath>$(RevitDir)\RevitAPI.dll</HintPath><Private>false</Private></Reference>
+    <Reference Include="RevitAPIUI"><HintPath>$(RevitDir)\RevitAPIUI.dll</HintPath><Private>false</Private></Reference>
+  </ItemGroup>
+  <ItemGroup Condition="'$(UseLocalRevit)' != 'true'">
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitYear).*" ExcludeAssets="runtime" PrivateAssets="all" />
+    <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitYear).*" ExcludeAssets="runtime" PrivateAssets="all" />
+  </ItemGroup>
+</Project>

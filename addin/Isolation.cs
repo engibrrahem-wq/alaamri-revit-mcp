@@ -17,7 +17,10 @@ namespace Alaamri.RevitMcp
         protected override Assembly Load(AssemblyName name)
         {
             // Our own DLL and the Roslyn stack come from our folder; Revit and .NET from the default context.
-            if (name.Name == "AlaamriRevitMcp" || name.Name.StartsWith("Microsoft.CodeAnalysis"))
+            // On .NET 8 (Revit 2025/2026) Roslyn also needs newer System.Collections.Immutable and
+            // System.Reflection.Metadata than the framework has; they ship next to us only in that case.
+            if (name.Name == "AlaamriRevitMcp" || name.Name.StartsWith("Microsoft.CodeAnalysis")
+                || name.Name == "System.Collections.Immutable" || name.Name == "System.Reflection.Metadata")
             {
                 string p = Path.Combine(_dir, name.Name + ".dll");
                 if (File.Exists(p)) return LoadFromAssemblyPath(p);

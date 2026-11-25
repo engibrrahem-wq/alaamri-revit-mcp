@@ -1,24 +1,24 @@
 # Alaamri Revit MCP
 
-An [MCP](https://modelcontextprotocol.io) server that gives **Claude** (or any MCP client) **full Revit API access** inside a running **Autodesk Revit 2027** session: run any C# against the live model, plus ready tools to read, edit, select, delete, open, save and export.
+An [MCP](https://modelcontextprotocol.io) server that gives **Claude** (or any MCP client) **full Revit API access** inside a running **Autodesk Revit 2025, 2026 or 2027** session: run any C# against the live model, plus ready tools to read, edit, select, delete, open, save and export.
 
 It has two parts:
 
-1. **Revit add-in** (`addin/`, prebuilt in `dist/`): adds an **Alaamri** ribbon tab with a **Start/Stop Claude** button (green = connected) and **About**. It opens a bridge on `127.0.0.1` only, protected by a per-session token, and runs every request on Revit's API thread through `ExternalEvent`. C# is compiled at runtime with Roslyn, isolated in its own load context so other add-ins' Roslyn versions don't clash.
+1. **Revit add-in** (`addin/`, prebuilt per version in `dist/2025`, `dist/2026`, `dist/2027`): adds an **Alaamri** ribbon tab with a **Start/Stop Claude** button (green = connected) and **About**. It opens a bridge on `127.0.0.1` only, protected by a per-session token, and runs every request on Revit's API thread through `ExternalEvent`. C# is compiled at runtime with Roslyn, isolated in its own load context so other add-ins' Roslyn versions don't clash.
 2. **MCP server** (`server.py`): exposes the bridge as MCP tools over stdio.
 
 > **بالعربي:** [القسم العربي](#بالعربية) · [برومبت التثبيت عبر Claude](prompts/install-with-claude.md) · تثبيت بنقرة واحدة: `install.bat`
 
 ## Requirements
 
-- Windows, **Autodesk Revit 2027**
+- Windows, **Autodesk Revit 2025, 2026 or 2027** (2027 is live-tested; 2025/2026 builds target .NET 8)
 - Python 3.10 or newer
 
 ## Install
 
 **Let Claude do it:** paste the prompt in [prompts/install-with-claude.md](prompts/install-with-claude.md) into Claude Code.
 
-**Quick (Windows):** close Revit, then double-click `install.bat` (inside the cloned folder or on its own). It copies the add-in to `%APPDATA%\Autodesk\Revit\Addins\2027`, installs the server into `%LOCALAPPDATA%\Alaamri-Revit-MCP` and registers it in Claude Desktop (keeping a `.bak` of your config). Fully quit and reopen Claude Desktop, open Revit and choose **Always Load** for the add-in.
+**Quick (Windows):** close Revit, then double-click `install.bat` (inside the cloned folder or on its own). It copies the add-in for every supported Revit version it finds to `%APPDATA%\Autodesk\Revit\Addins\<year>`, installs the server into `%LOCALAPPDATA%\Alaamri-Revit-MCP` and registers it in Claude Desktop (keeping a `.bak` of your config). Fully quit and reopen Claude Desktop, open Revit and choose **Always Load** for the add-in.
 
 **Claude Code:**
 
@@ -26,10 +26,10 @@ It has two parts:
 claude mcp add alaamri-revit -- "%LOCALAPPDATA%\Alaamri-Revit-MCP\.venv\Scripts\alaamri-revit-mcp.exe"
 ```
 
-**Build the add-in from source** (.NET 10 SDK):
+**Build the add-in from source** (.NET 10 SDK; 2025/2026 use the Nice3point Revit API reference packages, so Revit need not be installed):
 
 ```powershell
-dotnet build addin -c Release -o dist\AlaamriRevitMcp
+dotnet build addin\AlaamriRevitMcp.csproj -c Release -p:RevitYear=2026 -o dist\2026
 ```
 
 ## Tools
@@ -76,7 +76,7 @@ MIT, see [LICENSE](LICENSE).
 
 ## بالعربية
 
-**Alaamri Revit MCP** خادم MCP يمنح Claude (أو أي عميل MCP) **صلاحية كاملة على Revit API** داخل جلسة Revit 2027 المفتوحة: تنفيذ أي كود C# على النموذج مباشرة، إضافة إلى أدوات جاهزة للقراءة والتعديل والتحديد والحذف والفتح والحفظ والتصدير.
+**Alaamri Revit MCP** خادم MCP يمنح Claude (أو أي عميل MCP) **صلاحية كاملة على Revit API** داخل جلسة Revit المفتوحة (الإصدارات 2025 و2026 و2027): تنفيذ أي كود C# على النموذج مباشرة، إضافة إلى أدوات جاهزة للقراءة والتعديل والتحديد والحذف والفتح والحفظ والتصدير.
 
 ### المكوّنان
 1. **إضافة Revit**: تضيف تبويب **Alaamri** فيه زر **Start/Stop Claude** (أخضر عند الاتصال) وزر **About**. الاتصال محلي فقط على `127.0.0.1` ومحمي برمز سري يتجدد في كل تشغيل.

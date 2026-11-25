@@ -28,12 +28,13 @@ try {
   }
   if (Get-Process Revit -ErrorAction SilentlyContinue) { throw 'Please close Revit first (save your work), then run this again.' }
   # 1. Revit add-in
-  $years = @('2027') | Where-Object { Test-Path "C:\Program Files\Autodesk\Revit $_\Revit.exe" }
-  if (-not $years) { Say 'WARNING: Revit 2027 was not found. The add-in is installed anyway for Revit 2027.' 'Yellow'; $years = @('2027') }
+  $supported = @('2025', '2026', '2027')
+  $years = $supported | Where-Object { Test-Path "C:\Program Files\Autodesk\Revit $_\Revit.exe" }
+  if (-not $years) { throw 'No supported Revit found (2025, 2026 or 2027 in C:\Program Files\Autodesk).' }
   foreach ($y in $years) {
     $ad = Join-Path $env:APPDATA "Autodesk\Revit\Addins\$y"
     New-Item -ItemType Directory -Force (Join-Path $ad 'AlaamriRevitMcp') | Out-Null
-    Copy-Item (Join-Path $src 'dist\AlaamriRevitMcp\*') (Join-Path $ad 'AlaamriRevitMcp') -Force
+    Copy-Item (Join-Path $src "dist\$y\*") (Join-Path $ad 'AlaamriRevitMcp') -Force
     Copy-Item (Join-Path $src 'addin\AlaamriRevitMcp.addin') $ad -Force
     Say "[1/4] Revit $y add-in installed in $ad"
   }

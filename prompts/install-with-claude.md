@@ -1,6 +1,6 @@
 # Install Alaamri Revit MCP with Claude — copy-paste prompt
 
-Paste the prompt below into **Claude Code** (or Claude Desktop with a terminal / Desktop Commander tool) on the Windows PC that has Revit 2027.
+Paste the prompt below into **Claude Code** (or Claude Desktop with a terminal / Desktop Commander tool) on the Windows PC that has Revit 2025, 2026 or 2027.
 
 ---
 
@@ -8,8 +8,8 @@ Paste the prompt below into **Claude Code** (or Claude Desktop with a terminal /
 Please install "Alaamri Revit MCP" on this Windows PC for me.
 
 1. Find the project on GitHub: https://github.com/engibrrahem-wq/alaamri-revit-mcp
-   Read its README first so you understand what it installs (a Revit 2027 add-in + a local Python MCP server).
-2. Check the requirements: Windows, Revit 2027, Python 3.10+. Tell me if anything is missing and how to get it.
+   Read its README first so you understand what it installs (a Revit 2025/2026/2027 add-in + a local Python MCP server).
+2. Check the requirements: Windows, Revit 2025, 2026 or 2027, Python 3.10+. Tell me if anything is missing and how to get it.
 3. Ask me to close Revit (and save my work) before installing.
 4. Download the repository (git clone, or the ZIP of the main branch) into a folder in my user profile and run install.bat from it.
    Show me the installer output. If something fails, read the error and fix it.
@@ -36,13 +36,13 @@ Please install "Alaamri Revit MCP" on this Windows PC for me.
 
 ## البرومبت بالعربية
 
-الصق النص التالي في **Claude Code** (أو Claude Desktop مع أداة طرفية) على جهاز ويندوز المثبّت عليه Revit 2027:
+الصق النص التالي في **Claude Code** (أو Claude Desktop مع أداة طرفية) على جهاز ويندوز المثبّت عليه Revit 2025 أو 2026 أو 2027:
 
 ```text
 ثبّت لي أداة "Alaamri Revit MCP" على هذا الجهاز.
 
-1. ابحث عن المشروع على GitHub: https://github.com/engibrrahem-wq/alaamri-revit-mcp واقرأ ملف README أولاً لتفهم ما يُثبَّت (إضافة لـ Revit 2027 وخادم MCP محلي بلغة Python).
-2. تحقق من المتطلبات: ويندوز، وRevit 2027، وPython 3.10 أو أحدث. أخبرني إن نقص شيء وكيف أحصل عليه.
+1. ابحث عن المشروع على GitHub: https://github.com/engibrrahem-wq/alaamri-revit-mcp واقرأ ملف README أولاً لتفهم ما يُثبَّت (إضافة لـ Revit 2025/2026/2027 وخادم MCP محلي بلغة Python).
+2. تحقق من المتطلبات: ويندوز، وRevit 2025 أو 2026 أو 2027، وPython 3.10 أو أحدث. أخبرني إن نقص شيء وكيف أحصل عليه.
 3. اطلب مني إغلاق Revit (بعد حفظ عملي) قبل التثبيت.
 4. نزّل المستودع (git clone أو ملف ZIP للفرع main) إلى مجلد داخل ملفي الشخصي، وشغّل install.bat منه، واعرض لي مخرجاته، وإن ظهر خطأ فاقرأه وعالجه.
 5. سجّل الخادم في تطبيق Claude الذي أستخدمه:
