@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "alaamri-revit-mcp"
+version = "0.1.0"
+description = "MCP server that gives Claude and other MCP clients full Revit API access inside Autodesk Revit (C# execution + ready tools)."
+readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
+authors = [{ name = "Dr Ibrahim M.A. Alaamri" }]
+requires-python = ">=3.10"
+dependencies = ["mcp==2.3.0"]
+keywords = ["mcp", "revit", "bim", "autodesk", "revit-api", "claude", "aec"]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: Microsoft :: Windows",
+    "Intended Audience :: Developers",
+    "Topic :: Scientific/Engineering",
+]
+
+[project.urls]
+Homepage = "https://github.com/engibrrahem-wq/alaamri-revit-mcp"
+Author = "https://www.linkedin.com/in/dribrahim-alameri/"
+
+[project.scripts]
+alaamri-revit-mcp = "server:main"
+
+[tool.setuptools]
+py-modules = ["server"]

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RevitAddIns>
+  <AddIn Type="Application">
+    <Name>Alaamri Revit MCP</Name>
+    <Assembly>AlaamriRevitMcp\AlaamriRevitMcp.dll</Assembly>
+    <AddInId>6E0B6C1A-3F2D-4C8E-9A51-A1A4A3E1C027</AddInId>
+    <FullClassName>Alaamri.RevitMcp.App</FullClassName>
+    <VendorId>ALAAMRI</VendorId>
+    <VendorDescription>Dr Ibrahim M.A. Alaamri - https://github.com/engibrrahem-wq/alaamri-revit-mcp</VendorDescription>
+  </AddIn>
+</RevitAddIns>
