@@ -13,7 +13,7 @@ import urllib.request
 
 from mcp.server.mcpserver import MCPServer
 
-__version__ = "0.1.0"
+__version__ = "0.2.0"
 AUTHOR = "Dr Ibrahim M.A. Alaamri"
 LINKEDIN_URL = "https://www.linkedin.com/in/dribrahim-alameri/"
 REPO_URL = "https://github.com/engibrrahem-wq/alaamri-revit-mcp"
@@ -116,6 +116,12 @@ def status() -> str:
         transaction=False, timeout_s=30,
     )
     ping["session"] = res.get("result", res)
+    try:
+        u = _update_state()
+        if u["update_available"]:
+            ping["update"] = f"Version {u['latest']} is available ({u['notes']}). Tell the user; install only if they agree."
+    except Exception:
+        pass
     return _out(ping)
 
 
@@ -295,6 +301,101 @@ def export_view_image(path: str, pixel_width: int = 1600) -> str:
     return System.IO.Directory.GetFiles(dir, stem + "*.png").OrderByDescending(f => System.IO.File.GetLastWriteTime(f)).FirstOrDefault();
     """
     return _out(_exec(code, transaction=False, timeout_s=300))
+
+
+# ---------------------------------------------------------------- updates
+# The author publishes a new version by updating `version.json` on the main branch (see tools/make_release.py).
+# Installed copies only READ that file; nothing is installed without the user's own go-ahead.
+
+UPDATE_MANIFEST_URL = "https://raw.githubusercontent.com/engibrrahem-wq/alaamri-revit-mcp/main/version.json"
+ALLOWED_DOWNLOAD_PREFIX = "https://github.com/engibrrahem-wq/alaamri-revit-mcp/"
+UPDATE_CACHE = os.path.join(os.path.dirname(INFO_PATH), "update-check.json")
+
+
+def _ver(s):
+    return tuple(int(p) for p in str(s).lstrip("v").split(".") if p.isdigit())
+
+
+def _manifest(force=False):
+    import time
+    if not force:
+        try:
+            with open(UPDATE_CACHE, encoding="utf-8") as f:
+                c = json.load(f)
+            if time.time() - c.get("checked", 0) < 24 * 3600:
+                return c["manifest"]
+        except Exception:
+            pass
+    req = urllib.request.Request(UPDATE_MANIFEST_URL, headers={"User-Agent": "alaamri-revit-mcp/" + __version__})
+    with urllib.request.urlopen(req, timeout=10) as r:
+        m = json.loads(r.read().decode("utf-8"))
+    try:
+        os.makedirs(os.path.dirname(UPDATE_CACHE), exist_ok=True)
+        with open(UPDATE_CACHE, "w", encoding="utf-8") as f:
+            json.dump({"checked": time.time(), "manifest": m}, f)
+    except OSError:
+        pass
+    return m
+
+
+def _update_state(force=False):
+    m = _manifest(force)
+    newer = _ver(m.get("version", "0")) > _ver(__version__)
+    return {"installed": __version__, "latest": m.get("version"), "update_available": newer,
+            "notes": m.get("notes", ""), "released": m.get("released", "")}
+
+
+@mcp.tool()
+def check_update() -> str:
+    """Check GitHub for a newer Alaamri Revit MCP version. Read-only: downloads nothing.
+    If an update is available, show the user the version and notes and ask before calling install_update."""
+    try:
+        return _out(_update_state(force=True))
+    except Exception as e:
+        return _out({"installed": __version__, "error": f"Could not reach GitHub: {e}"})
+
+
+@mcp.tool()
+def install_update(user_confirmed: bool = False) -> str:
+    """Download the latest release from the official GitHub repo, verify its SHA-256, and open the installer
+    in its own window. ONLY call with user_confirmed=true after the user explicitly said yes in chat.
+    The installer waits until Revit and Claude Desktop are closed, then updates both the add-in and this server."""
+    if not user_confirmed:
+        return _out({"ok": False, "error": "Ask the user first, then call again with user_confirmed=true."})
+    import hashlib, subprocess, tempfile, zipfile
+    st = _update_state(force=True)
+    if not st["update_available"]:
+        return _out({"ok": True, "message": "Already up to date.", **st})
+    m = _manifest()
+    url, sha = m.get("zip", ""), m.get("sha256", "").lower()
+    if not url.startswith(ALLOWED_DOWNLOAD_PREFIX) or len(sha) != 64:
+        return _out({"ok": False, "error": "Update manifest is invalid; not installing."})
+    tmp = tempfile.mkdtemp(prefix="alaamri-revit-mcp-update-")
+    zpath = os.path.join(tmp, "release.zip")
+    try:
+        req = urllib.request.Request(url, headers={"User-Agent": "alaamri-revit-mcp/" + __version__})
+        with urllib.request.urlopen(req, timeout=120) as r, open(zpath, "wb") as f:
+            f.write(r.read())
+    except Exception:
+        # Python's certificate store can differ from Windows'; fall back to Windows' own downloader
+        cmd = f"Invoke-WebRequest -UseBasicParsing -Uri '{url}' -OutFile '{zpath}'"
+        if subprocess.run(["powershell", "-NoProfile", "-Command", cmd], capture_output=True).returncode or not os.path.exists(zpath):
+            return _out({"ok": False, "error": "Download failed (check the internet connection)."})
+    with open(zpath, "rb") as f:
+        got = hashlib.sha256(f.read()).hexdigest()
+    if got != sha:
+        return _out({"ok": False, "error": "Checksum mismatch: download rejected.", "expected": sha, "got": got})
+    with zipfile.ZipFile(zpath) as z:
+        z.extractall(tmp)
+    root = next((os.path.join(tmp, d) for d in os.listdir(tmp) if os.path.isfile(os.path.join(tmp, d, "install.bat"))), None)
+    if not root:
+        return _out({"ok": False, "error": "install.bat not found in the release."})
+    env = dict(os.environ, AMCP_WAIT="1")
+    subprocess.Popen(["cmd", "/c", "start", "Alaamri Revit MCP update", os.path.join(root, "install.bat")],
+                     cwd=root, env=env, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+    return _out({"ok": True, "updating_to": st["latest"], "notes": st["notes"],
+                 "next": "An installer window opened. Save your work, close Revit and fully quit Claude Desktop; "
+                         "the installer continues by itself, then reopen both."})
 
 
 def main():

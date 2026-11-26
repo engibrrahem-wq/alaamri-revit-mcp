@@ -26,6 +26,11 @@ try {
     Expand-Archive (Join-Path $tmp 'repo.zip') $tmp -Force
     $src = (Get-ChildItem $tmp -Directory | Select-Object -First 1).FullName
   }
+  if ($env:AMCP_WAIT -eq '1') {
+    Say 'Update ready. Save your work, then close Revit and fully quit Claude Desktop (tray icon > Quit).' 'Yellow'
+    while (Get-Process Revit, alaamri-revit-mcp -ErrorAction SilentlyContinue) { Start-Sleep 2 }
+    Say 'Revit and Claude are closed, updating ...'
+  }
   if (Get-Process Revit -ErrorAction SilentlyContinue) { throw 'Please close Revit first (save your work), then run this again.' }
   # 1. Revit add-in
   $supported = @('2025', '2026', '2027')
