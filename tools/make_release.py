@@ -1,4 +1,4 @@
-"""Author-only: package a release and write version.json.
+﻿"""Author-only: package a release and write version.json.
 
 Usage:  python tools/make_release.py 0.2.0 "Short release notes"
 Then (after review):
@@ -30,6 +30,6 @@ subprocess.check_call(["git", "archive", "--format=zip", f"--prefix={name}/", "-
 sha = hashlib.sha256(open(zpath, "rb").read()).hexdigest()
 
 manifest = {"version": ver, "released": datetime.date.today().isoformat(), "notes": notes,
-            "zip": f"{REPO}/releases/download/v{ver}/{name}.zip", "sha256": sha}
+            "zip": f"{REPO}/archive/refs/tags/v{ver}.zip", "sha256": "FILL: sha256 of that tag archive after pushing the tag"}
 open(os.path.join(ROOT, "version.json"), "w", encoding="utf-8").write(json.dumps(manifest, ensure_ascii=False, indent=1) + "\n")
 print(json.dumps(manifest, indent=1))

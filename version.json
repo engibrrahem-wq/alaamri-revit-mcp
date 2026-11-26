@@ -1,7 +1,7 @@
 {
- "version": "0.2.0",
- "released": "2026-11-26",
- "notes": "Built-in update checker: check_update / install_update (asks first, SHA-256 verified)",
- "zip": "https://github.com/engibrrahem-wq/alaamri-revit-mcp/releases/download/v0.2.0/alaamri-revit-mcp-v0.2.0.zip",
- "sha256": "065369245f9ab8f38486ec6ef8aa3d23a7edcea286c80b70f04f0530f596366c"
+    "version":  "0.2.0",
+    "released":  "2026-11-26",
+    "notes":  "Built-in update checker: check_update / install_update (asks first, SHA-256 verified)",
+    "zip":  "https://github.com/engibrrahem-wq/alaamri-revit-mcp/archive/refs/tags/v0.2.0.zip",
+    "sha256":  "9d7917e93920fb180f8351b534ee07b75594a8c17755bae4e513f9441effd529"
 }
