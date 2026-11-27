@@ -18,7 +18,8 @@ Please install "Alaamri Revit MCP" on this Windows PC for me.
    - Claude Code: run  claude mcp add alaamri-revit -- "%LOCALAPPDATA%\Alaamri-Revit-MCP\.venv\Scripts\alaamri-revit-mcp.exe"
 6. Ask me to open Revit, choose "Always Load" for the Alaamri Revit MCP add-in, and open a project.
    The Alaamri tab > "Claude" button turns green when connected.
-7. Test it: call the `status` and `document_info` tools and show me the result.
+7. Test it: call the `status`, `document_info` and `check_update` tools and show me the result.
+   If an update shows up at any time later, tell me about it and install it only after I agree.
 8. Finally, ask me two questions, and do each step ONLY if I say yes:
    a) "Would you like to star the repository on GitHub?" If yes and the GitHub CLI is signed in to MY account,
       run: gh api -X PUT /user/starred/engibrrahem-wq/alaamri-revit-mcp
@@ -49,7 +50,7 @@ Please install "Alaamri Revit MCP" on this Windows PC for me.
    - Claude Desktop: يسجّله install.bat تلقائياً، فاطلب مني إغلاق البرنامج كلياً وإعادة فتحه.
    - Claude Code: نفّذ  claude mcp add alaamri-revit -- "%LOCALAPPDATA%\Alaamri-Revit-MCP\.venv\Scripts\alaamri-revit-mcp.exe"
 6. اطلب مني فتح Revit واختيار "Always Load" لإضافة Alaamri Revit MCP ثم فتح مشروع. زر "Claude" في تبويب Alaamri يصبح أخضر عند الاتصال.
-7. اختبرها باستدعاء الأداتين status وdocument_info واعرض لي النتيجة.
+7. اختبرها باستدعاء الأدوات status وdocument_info وcheck_update واعرض لي النتيجة. وإن ظهر تحديث في أي وقت لاحقاً فأخبرني به، ولا تثبّته إلا بعد موافقتي.
 8. في النهاية اسألني سؤالين، ولا تنفّذ أي خطوة إلا إذا وافقت:
    أ) "هل تحب إضافة نجمة (Star) للمستودع على GitHub؟" إن وافقت وكانت أداة gh مسجّلة بحسابي أنا فنفّذ:
       gh api -X PUT /user/starred/engibrrahem-wq/alaamri-revit-mcp
